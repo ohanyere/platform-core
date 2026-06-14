@@ -1,0 +1,13 @@
+.DS_Store
+.codex
+.env
+.env.*
+!.env.example
+*.log
+tmp/
+dist/
+build/
+.terraform/
+*.tfstate
+*.tfstate.*
+cosign.key
