@@ -1,0 +1,17 @@
+apiVersion: platform.ohanyere.com/v1alpha1
+kind: MessageQueue
+metadata:
+  name: growth-events
+  namespace: growth-dev
+  labels:
+    platform.io/team: growth
+    platform.io/cost-center: cc-growth
+spec:
+  compositionRef:
+    name: messagequeue.aws.platform.ohanyere.com
+  parameters:
+    region: us-east-1
+    fifo: false
+    visibilityTimeoutSeconds: 30
+    deletionPolicy: Orphan
+

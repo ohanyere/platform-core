@@ -1,0 +1,44 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xdynamodbtables.platform.ohanyere.com
+spec:
+  group: platform.ohanyere.com
+  names:
+    kind: XDynamoDBTable
+    plural: xdynamodbtables
+  claimNames:
+    kind: DynamoDBTable
+    plural: dynamodbtables
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  required:
+                    - region
+                    - hashKey
+                  properties:
+                    region:
+                      type: string
+                    hashKey:
+                      type: string
+                    rangeKey:
+                      type: string
+                    billingMode:
+                      type: string
+                      enum: ["PAY_PER_REQUEST", "PROVISIONED"]
+                      default: PAY_PER_REQUEST
+                    deletionPolicy:
+                      type: string
+                      enum: ["Delete", "Orphan"]
+                      default: Orphan
+

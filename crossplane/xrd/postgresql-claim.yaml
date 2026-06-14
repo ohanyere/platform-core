@@ -1,0 +1,48 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xpostgresqlinstances.platform.ohanyere.com
+spec:
+  group: platform.ohanyere.com
+  names:
+    kind: XPostgreSQLInstance
+    plural: xpostgresqlinstances
+  claimNames:
+    kind: PostgreSQLInstance
+    plural: postgresqlinstances
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required:
+                - parameters
+              properties:
+                parameters:
+                  type: object
+                  required:
+                    - region
+                    - storageGB
+                    - instanceClass
+                  properties:
+                    region:
+                      type: string
+                    storageGB:
+                      type: integer
+                      minimum: 20
+                    instanceClass:
+                      type: string
+                      default: db.t4g.micro
+                    engineVersion:
+                      type: string
+                      default: "15"
+                    deletionPolicy:
+                      type: string
+                      enum: ["Delete", "Orphan"]
+                      default: Orphan
+

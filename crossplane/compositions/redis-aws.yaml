@@ -1,0 +1,38 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: redis.aws.platform.ohanyere.com
+  labels:
+    provider: aws
+    platform.ohanyere.com/resource: redis
+spec:
+  compositeTypeRef:
+    apiVersion: platform.ohanyere.com/v1alpha1
+    kind: XRedisInstance
+  resources:
+    - name: cache-cluster
+      base:
+        apiVersion: elasticache.aws.upbound.io/v1beta1
+        kind: Cluster
+        spec:
+          deletionPolicy: Orphan
+          forProvider:
+            engine: redis
+            engineVersion: "7.0"
+            nodeType: cache.t4g.micro
+            numCacheNodes: 1
+            region: us-east-1
+          providerConfigRef:
+            name: default
+      patches:
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.region
+        - fromFieldPath: spec.parameters.nodeType
+          toFieldPath: spec.forProvider.nodeType
+        - fromFieldPath: spec.parameters.numCacheNodes
+          toFieldPath: spec.forProvider.numCacheNodes
+        - fromFieldPath: spec.parameters.engineVersion
+          toFieldPath: spec.forProvider.engineVersion
+        - fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.deletionPolicy
+

@@ -1,0 +1,17 @@
+apiVersion: platform.ohanyere.com/v1alpha1
+kind: RedisInstance
+metadata:
+  name: payments-cache
+  namespace: payments-dev
+  labels:
+    platform.io/team: payments
+    platform.io/cost-center: cc-payments
+spec:
+  compositionRef:
+    name: redis.aws.platform.ohanyere.com
+  parameters:
+    region: us-east-1
+    nodeType: cache.t4g.micro
+    numCacheNodes: 1
+    deletionPolicy: Orphan
+

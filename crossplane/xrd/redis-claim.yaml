@@ -1,0 +1,45 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xredisinstances.platform.ohanyere.com
+spec:
+  group: platform.ohanyere.com
+  names:
+    kind: XRedisInstance
+    plural: xredisinstances
+  claimNames:
+    kind: RedisInstance
+    plural: redisinstances
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  required:
+                    - region
+                    - nodeType
+                  properties:
+                    region:
+                      type: string
+                    nodeType:
+                      type: string
+                      default: cache.t4g.micro
+                    numCacheNodes:
+                      type: integer
+                      default: 1
+                    engineVersion:
+                      type: string
+                      default: "7.0"
+                    deletionPolicy:
+                      type: string
+                      enum: ["Delete", "Orphan"]
+                      default: Orphan
+

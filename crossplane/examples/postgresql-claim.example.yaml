@@ -1,0 +1,17 @@
+apiVersion: platform.ohanyere.com/v1alpha1
+kind: PostgreSQLInstance
+metadata:
+  name: payments-postgres
+  namespace: payments-dev
+  labels:
+    platform.io/team: payments
+    platform.io/cost-center: cc-payments
+spec:
+  compositionRef:
+    name: postgresql.aws.platform.ohanyere.com
+  parameters:
+    region: us-east-1
+    storageGB: 20
+    instanceClass: db.t4g.micro
+    deletionPolicy: Orphan
+

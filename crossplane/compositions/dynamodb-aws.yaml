@@ -1,0 +1,37 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: dynamodb.aws.platform.ohanyere.com
+  labels:
+    provider: aws
+    platform.ohanyere.com/resource: dynamodb
+spec:
+  compositeTypeRef:
+    apiVersion: platform.ohanyere.com/v1alpha1
+    kind: XDynamoDBTable
+  resources:
+    - name: table
+      base:
+        apiVersion: dynamodb.aws.upbound.io/v1beta1
+        kind: Table
+        spec:
+          deletionPolicy: Orphan
+          forProvider:
+            region: us-east-1
+            billingMode: PAY_PER_REQUEST
+            attribute:
+              - name: id
+                type: S
+            hashKey: id
+          providerConfigRef:
+            name: default
+      patches:
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.region
+        - fromFieldPath: spec.parameters.billingMode
+          toFieldPath: spec.forProvider.billingMode
+        - fromFieldPath: spec.parameters.hashKey
+          toFieldPath: spec.forProvider.hashKey
+        - fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.deletionPolicy
+

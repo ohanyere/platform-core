@@ -1,0 +1,41 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xmessagequeues.platform.ohanyere.com
+spec:
+  group: platform.ohanyere.com
+  names:
+    kind: XMessageQueue
+    plural: xmessagequeues
+  claimNames:
+    kind: MessageQueue
+    plural: messagequeues
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  required:
+                    - region
+                  properties:
+                    region:
+                      type: string
+                    fifo:
+                      type: boolean
+                      default: false
+                    visibilityTimeoutSeconds:
+                      type: integer
+                      default: 30
+                    deletionPolicy:
+                      type: string
+                      enum: ["Delete", "Orphan"]
+                      default: Orphan
+

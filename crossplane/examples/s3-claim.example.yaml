@@ -1,0 +1,16 @@
+apiVersion: platform.ohanyere.com/v1alpha1
+kind: ObjectBucket
+metadata:
+  name: inventory-assets
+  namespace: inventory-dev
+  labels:
+    platform.io/team: inventory
+    platform.io/cost-center: cc-inventory
+spec:
+  compositionRef:
+    name: objectbucket.aws.platform.ohanyere.com
+  parameters:
+    region: us-east-1
+    versioning: true
+    deletionPolicy: Orphan
+

@@ -1,0 +1,17 @@
+apiVersion: platform.ohanyere.com/v1alpha1
+kind: DynamoDBTable
+metadata:
+  name: inventory-state
+  namespace: inventory-dev
+  labels:
+    platform.io/team: inventory
+    platform.io/cost-center: cc-inventory
+spec:
+  compositionRef:
+    name: dynamodb.aws.platform.ohanyere.com
+  parameters:
+    region: us-east-1
+    hashKey: id
+    billingMode: PAY_PER_REQUEST
+    deletionPolicy: Orphan
+

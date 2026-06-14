@@ -1,0 +1,43 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: postgresql.aws.platform.ohanyere.com
+  labels:
+    provider: aws
+    platform.ohanyere.com/resource: postgresql
+spec:
+  compositeTypeRef:
+    apiVersion: platform.ohanyere.com/v1alpha1
+    kind: XPostgreSQLInstance
+  resources:
+    - name: rds-instance
+      base:
+        apiVersion: rds.aws.upbound.io/v1beta1
+        kind: Instance
+        spec:
+          deletionPolicy: Orphan
+          forProvider:
+            allocatedStorage: 20
+            autoMinorVersionUpgrade: true
+            backupRetentionPeriod: 7
+            dbName: app
+            engine: postgres
+            engineVersion: "15"
+            instanceClass: db.t4g.micro
+            publiclyAccessible: false
+            region: us-east-1
+            skipFinalSnapshot: false
+          providerConfigRef:
+            name: default
+      patches:
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.region
+        - fromFieldPath: spec.parameters.storageGB
+          toFieldPath: spec.forProvider.allocatedStorage
+        - fromFieldPath: spec.parameters.instanceClass
+          toFieldPath: spec.forProvider.instanceClass
+        - fromFieldPath: spec.parameters.engineVersion
+          toFieldPath: spec.forProvider.engineVersion
+        - fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.deletionPolicy
+

@@ -1,0 +1,33 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: messagequeue.aws.platform.ohanyere.com
+  labels:
+    provider: aws
+    platform.ohanyere.com/resource: sqs
+spec:
+  compositeTypeRef:
+    apiVersion: platform.ohanyere.com/v1alpha1
+    kind: XMessageQueue
+  resources:
+    - name: queue
+      base:
+        apiVersion: sqs.aws.upbound.io/v1beta1
+        kind: Queue
+        spec:
+          deletionPolicy: Orphan
+          forProvider:
+            region: us-east-1
+            visibilityTimeoutSeconds: 30
+          providerConfigRef:
+            name: default
+      patches:
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.region
+        - fromFieldPath: spec.parameters.visibilityTimeoutSeconds
+          toFieldPath: spec.forProvider.visibilityTimeoutSeconds
+        - fromFieldPath: spec.parameters.fifo
+          toFieldPath: spec.forProvider.fifoQueue
+        - fromFieldPath: spec.parameters.deletionPolicy
+          toFieldPath: spec.deletionPolicy
+
