@@ -1,0 +1,33 @@
+name: Reusable Release
+
+on:
+  workflow_call:
+    inputs:
+      artifact_name:
+        required: true
+        type: string
+      version:
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Publish Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create release archive
+        run: |
+          tar --exclude-vcs -czf "${{ inputs.artifact_name }}-${{ inputs.version }}.tar.gz" .
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.version }}
+          files: ${{ inputs.artifact_name }}-${{ inputs.version }}.tar.gz
+

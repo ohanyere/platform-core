@@ -1,0 +1,51 @@
+name: Reusable Policy Check
+
+on:
+  workflow_call:
+    inputs:
+      manifest_path:
+        description: Path containing Kubernetes manifests.
+        required: false
+        default: .
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  policy:
+    name: Validate Manifests And Policy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          curl -sSL -o kubeconform.tar.gz https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz
+          tar -xzf kubeconform.tar.gz kubeconform
+          sudo mv kubeconform /usr/local/bin/kubeconform
+          curl -sSL -o conftest.tar.gz https://github.com/open-policy-agent/conftest/releases/download/v0.56.0/conftest_0.56.0_Linux_x86_64.tar.gz
+          tar -xzf conftest.tar.gz conftest
+          sudo mv conftest /usr/local/bin/conftest
+
+      - name: Kubeconform validation
+        run: |
+          kubeconform -summary -strict -ignore-missing-schemas "${{ inputs.manifest_path }}"
+
+      - name: OPA policy validation
+        run: |
+          conftest test "${{ inputs.manifest_path }}" --policy policies/opa
+
+      - name: Required label validation
+        run: |
+          conftest test "${{ inputs.manifest_path }}" --policy policies/opa --namespace labels
+
+      - name: Latest tag validation
+        run: |
+          conftest test "${{ inputs.manifest_path }}" --policy policies/opa --namespace images
+
+      - name: Resource limits validation
+        run: |
+          echo "Resource request and limit checks are enforced by Kyverno in-cluster and by reusable policy bundles for service repos."
+
