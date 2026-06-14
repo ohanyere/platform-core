@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vault-enable-kubernetes-auth-example
+  namespace: vault
+  annotations:
+    platform.ohanyere.com/note: "Example job. Review and adapt before running in a real cluster."
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: vault
+          image: hashicorp/vault:1.16
+          command:
+            - sh
+            - -ec
+            - |
+              vault auth enable kubernetes || true
+              vault write auth/kubernetes/config \
+                kubernetes_host="https://kubernetes.default.svc"
+
