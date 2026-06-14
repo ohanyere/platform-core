@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubecost-alerts
+  namespace: finops
+data:
+  alerts.yaml: |
+    alerts:
+      - type: budget
+        threshold: 0.8
+        window: monthly
+      - type: spend-change
+        threshold: 0.25
+        window: daily
+

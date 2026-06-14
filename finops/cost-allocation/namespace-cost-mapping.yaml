@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: namespace-cost-mapping
+  namespace: finops
+data:
+  mappings.yaml: |
+    payments-*:
+      team: payments
+      costCenter: cc-payments
+    inventory-*:
+      team: inventory
+      costCenter: cc-inventory
+    growth-*:
+      team: growth
+      costCenter: cc-growth
+

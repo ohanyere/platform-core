@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: platform-required-cost-labels
+  namespace: finops
+data:
+  labels.yaml: |
+    required:
+      - app.kubernetes.io/name
+      - app.kubernetes.io/part-of
+      - platform.io/team
+      - platform.io/cost-center
+      - platform.io/environment
+

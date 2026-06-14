@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: finops-budget-alerts
+  namespace: monitoring
+spec:
+  groups:
+    - name: finops.budgets
+      rules:
+        - alert: TeamBudgetBurnHigh
+          expr: kubecost_team_monthly_spend_usd / kubecost_team_monthly_budget_usd > 0.8
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: Team monthly budget burn is above 80 percent.
+

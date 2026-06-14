@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rightsizing-recommendations-template
+  namespace: finops
+data:
+  recommendation.yaml: |
+    workload: SERVICE_NAME
+    namespace: SERVICE_NAMESPACE
+    current:
+      cpuRequest: 250m
+      memoryRequest: 512Mi
+    recommended:
+      cpuRequest: 100m
+      memoryRequest: 256Mi
+    evidence:
+      window: 7d
+      source: kubecost
+

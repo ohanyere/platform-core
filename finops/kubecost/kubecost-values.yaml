@@ -1,0 +1,17 @@
+global:
+  prometheus:
+    enabled: false
+    fqdn: http://prometheus-operated.monitoring.svc:9090
+kubecostProductConfigs:
+  clusterName: platform-cluster
+  currencyCode: USD
+  labelMappingConfigs:
+    owner_label: platform.io/team
+    department_label: platform.io/cost-center
+    environment_label: platform.io/environment
+networkCosts:
+  enabled: true
+prometheus:
+  kube-state-metrics:
+    disabled: true
+
