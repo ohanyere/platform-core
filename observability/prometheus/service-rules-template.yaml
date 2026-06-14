@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: SERVICE_NAME-rules
+  namespace: SERVICE_NAMESPACE
+spec:
+  groups:
+    - name: SERVICE_NAME.rules
+      rules:
+        - alert: ServiceHighLatency
+          expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{service="SERVICE_NAME"}[5m])) by (le)) > 0.5
+          for: 10m
+          labels:
+            severity: warning
+            service: SERVICE_NAME
+          annotations:
+            summary: SERVICE_NAME p95 latency is above 500ms.
+

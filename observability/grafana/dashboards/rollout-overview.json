@@ -1,0 +1,16 @@
+{
+  "uid": "rollout-overview",
+  "title": "Rollout Overview",
+  "schemaVersion": 39,
+  "version": 1,
+  "tags": ["platform-core", "rollouts"],
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Canary Error Rate",
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+      "targets": [{"expr": "sum by (rollout) (rate(http_requests_total{status=~\"5..\"}[5m]))"}]
+    }
+  ]
+}
+

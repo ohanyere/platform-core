@@ -1,0 +1,22 @@
+{
+  "uid": "service-overview",
+  "title": "Service Overview",
+  "schemaVersion": 39,
+  "version": 1,
+  "tags": ["platform-core", "service"],
+  "templating": {
+    "list": [
+      {"name": "namespace", "type": "query", "query": "label_values(kube_namespace_labels, namespace)"},
+      {"name": "service", "type": "query", "query": "label_values(http_requests_total{namespace=\"$namespace\"}, service)"}
+    ]
+  },
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Request Rate",
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+      "targets": [{"expr": "sum(rate(http_requests_total{namespace=\"$namespace\",service=\"$service\"}[5m]))"}]
+    }
+  ]
+}
+

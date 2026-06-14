@@ -1,0 +1,22 @@
+{
+  "uid": "platform-overview",
+  "title": "Platform Overview",
+  "schemaVersion": 39,
+  "version": 1,
+  "tags": ["platform-core", "platform"],
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Cluster CPU Usage",
+      "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4},
+      "targets": [{"expr": "sum(rate(container_cpu_usage_seconds_total[5m]))"}]
+    },
+    {
+      "type": "stat",
+      "title": "HTTP 5xx Rate",
+      "gridPos": {"x": 6, "y": 0, "w": 6, "h": 4},
+      "targets": [{"expr": "sum(rate(http_requests_total{status=~\"5..\"}[5m]))"}]
+    }
+  ]
+}
+

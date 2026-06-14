@@ -1,0 +1,16 @@
+{
+  "uid": "cost-overview",
+  "title": "Cost Overview",
+  "schemaVersion": 39,
+  "version": 1,
+  "tags": ["platform-core", "finops"],
+  "panels": [
+    {
+      "type": "bargauge",
+      "title": "Monthly Spend By Team",
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+      "targets": [{"expr": "sum by (label_platform_io_team) (kubecost_namespace_monthly_cost_usd)"}]
+    }
+  ]
+}
+

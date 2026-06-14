@@ -1,0 +1,14 @@
+loki:
+  auth_enabled: false
+  commonConfig:
+    replication_factor: 1
+  storage:
+    type: filesystem
+  limits_config:
+    retention_period: 168h
+monitoring:
+  dashboards:
+    enabled: true
+  rules:
+    enabled: true
+
