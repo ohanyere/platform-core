@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: latency-check
+  namespace: argo-rollouts
+spec:
+  args:
+    - name: service-name
+    - name: namespace
+  metrics:
+    - name: p95-latency
+      interval: 1m
+      count: 5
+      successCondition: result[0] < 0.5
+      failureLimit: 2
+      provider:
+        prometheus:
+          address: http://prometheus-operated.monitoring.svc:9090
+          query: |
+            histogram_quantile(0.95,
+              sum(rate(http_request_duration_seconds_bucket{service="{{args.service-name}}",namespace="{{args.namespace}}"}[5m])) by (le)
+            )
+
