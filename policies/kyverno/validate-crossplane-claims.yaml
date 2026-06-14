@@ -1,0 +1,28 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: validate-crossplane-claim-labels
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: require-claim-ownership-labels
+      match:
+        any:
+          - resources:
+              apiGroups:
+                - platform.ohanyere.com
+              kinds:
+                - PostgreSQLInstance
+                - ObjectBucket
+                - MessageQueue
+                - RedisInstance
+                - DynamoDBTable
+      validate:
+        message: "Crossplane claims must include team and cost-center labels."
+        pattern:
+          metadata:
+            labels:
+              platform.io/team: "?*"
+              platform.io/cost-center: "?*"
+

@@ -1,0 +1,34 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-platform-finops-labels
+  annotations:
+    policies.kyverno.io/title: Require Platform And FinOps Labels
+    policies.kyverno.io/category: Platform Standards
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: require-standard-labels
+      match:
+        any:
+          - resources:
+              kinds:
+                - Namespace
+                - Deployment
+                - StatefulSet
+                - DaemonSet
+                - Job
+                - CronJob
+                - Service
+      validate:
+        message: "Resources must include standard app, team, cost-center, and environment labels."
+        pattern:
+          metadata:
+            labels:
+              app.kubernetes.io/name: "?*"
+              app.kubernetes.io/part-of: "?*"
+              platform.io/team: "?*"
+              platform.io/cost-center: "?*"
+              platform.io/environment: "?*"
+

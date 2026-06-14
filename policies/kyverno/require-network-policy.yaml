@@ -1,0 +1,28 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-namespace-network-policy
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: namespace-has-network-policy
+      match:
+        any:
+          - resources:
+              kinds:
+                - Namespace
+      context:
+        - name: policies
+          apiCall:
+            urlPath: "/apis/networking.k8s.io/v1/namespaces/{{ request.object.metadata.name }}/networkpolicies"
+            jmesPath: "items | length(@)"
+      validate:
+        message: "Each workload namespace should have at least one NetworkPolicy."
+        deny:
+          conditions:
+            all:
+              - key: "{{ policies }}"
+                operator: Equals
+                value: 0
+
