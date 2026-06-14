@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: SERVICE_NAME
+  namespace: SERVICE_NAMESPACE
+spec:
+  hosts:
+    - SERVICE_NAME.apps.ohanyere.com
+  gateways:
+    - istio-system/platform-public-gateway
+  http:
+    - route:
+        - destination:
+            host: SERVICE_NAME.SERVICE_NAMESPACE.svc.cluster.local
+            port:
+              number: 80

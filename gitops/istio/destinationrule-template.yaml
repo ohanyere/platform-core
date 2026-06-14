@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: SERVICE_NAME
+  namespace: SERVICE_NAMESPACE
+spec:
+  host: SERVICE_NAME.SERVICE_NAMESPACE.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+    loadBalancer:
+      simple: LEAST_REQUEST
+
