@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: team-growth
+  namespace: argocd
+spec:
+  description: Growth team applications.
+  sourceRepos:
+    - https://github.com/ohanyere/growth-*.git
+  destinations:
+    - namespace: growth-*
+      server: https://kubernetes.default.svc
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  clusterResourceWhitelist: []

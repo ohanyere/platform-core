@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: team-inventory
+  namespace: argocd
+spec:
+  description: Inventory team applications.
+  sourceRepos:
+    - https://github.com/ohanyere/inventory-*.git
+  destinations:
+    - namespace: inventory-*
+      server: https://kubernetes.default.svc
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  clusterResourceWhitelist: []
