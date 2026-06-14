@@ -1,0 +1,5 @@
+platformCore:
+  repository: https://github.com/ohanyere/platform-core.git
+  targetRevision: main
+  argocdNamespace: argocd
+

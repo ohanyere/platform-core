@@ -1,0 +1,7 @@
+apiVersion: v2
+name: platform-core
+description: Aggregator chart for platform-core standards and bootstrap metadata.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+

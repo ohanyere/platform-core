@@ -1,0 +1,4 @@
+platform-core chart rendered successfully.
+
+Review values.yaml and GitOps manifests before applying this chart to a cluster.
+
