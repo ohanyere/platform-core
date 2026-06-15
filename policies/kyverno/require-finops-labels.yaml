@@ -1,3 +1,4 @@
+---
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -22,7 +23,9 @@ spec:
                 - CronJob
                 - Service
       validate:
-        message: "Resources must include standard app, team, cost-center, and environment labels."
+        message: >-
+          Resources must include standard app, team, cost-center, and
+          environment labels.
         pattern:
           metadata:
             labels:
@@ -31,4 +34,3 @@ spec:
               platform.io/team: "?*"
               platform.io/cost-center: "?*"
               platform.io/environment: "?*"
-

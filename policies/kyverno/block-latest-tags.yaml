@@ -1,3 +1,4 @@
+---
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -13,7 +14,8 @@ spec:
               kinds:
                 - Pod
       validate:
-        message: "Images must use immutable tags or digests; ':latest' is not allowed."
+        message: >-
+          Images must use immutable tags or digests; ':latest' is not allowed.
         foreach:
           - list: "request.object.spec.containers[]"
             deny:
@@ -35,4 +37,3 @@ spec:
                   - key: "{{ contains(element.image, ':') }}"
                     operator: Equals
                     value: false
-

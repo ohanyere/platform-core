@@ -1,3 +1,4 @@
+---
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -13,7 +14,8 @@ spec:
               kinds:
                 - Pod
       validate:
-        message: "Application containers must define readinessProbe and livenessProbe."
+        message: >-
+          Application containers must define readinessProbe and livenessProbe.
         foreach:
           - list: "request.object.spec.containers[]"
             pattern:
@@ -21,4 +23,3 @@ spec:
                 periodSeconds: "*"
               livenessProbe:
                 periodSeconds: "*"
-

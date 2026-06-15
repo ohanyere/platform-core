@@ -1,3 +1,4 @@
+---
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -13,10 +14,10 @@ spec:
               kinds:
                 - Pod
       validate:
-        message: "Containers must set securityContext.readOnlyRootFilesystem=true."
+        message: >-
+          Containers must set securityContext.readOnlyRootFilesystem=true.
         foreach:
           - list: "request.object.spec.containers[]"
             pattern:
               securityContext:
                 readOnlyRootFilesystem: true
-

@@ -1,3 +1,4 @@
+---
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -13,7 +14,8 @@ spec:
               kinds:
                 - Pod
       validate:
-        message: "All containers must define CPU and memory requests and limits."
+        message: >-
+          All containers must define CPU and memory requests and limits.
         foreach:
           - list: "request.object.spec.containers[]"
             pattern:
@@ -24,4 +26,3 @@ spec:
                 limits:
                   cpu: "?*"
                   memory: "?*"
-
