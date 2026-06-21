@@ -42,6 +42,7 @@ jobs:
         if: ${{ steps.trivy_fs.outcome == 'success' && hashFiles('trivy-fs.sarif') != '' }}
         with:
           sarif_file: trivy-fs.sarif
+          category: trivy-filesystem
 
       - name: Image scan
         id: trivy_image
@@ -60,6 +61,7 @@ jobs:
         if: ${{ steps.trivy_image.outcome == 'success' && hashFiles('trivy-image.sarif') != '' }}
         with:
           sarif_file: trivy-image.sarif
+          category: trivy-image
 
       - name: Fail on critical vulnerabilities
         uses: aquasecurity/trivy-action@v0.36.0
