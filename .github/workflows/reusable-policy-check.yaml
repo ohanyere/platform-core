@@ -20,6 +20,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Checkout platform-core policies
+        uses: actions/checkout@v4
+        with:
+          repository: ohanyere/platform-core
+          path: platform-core
+
       - name: Install tools
         run: |
           curl -sSL -o kubeconform.tar.gz https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz
@@ -40,16 +46,34 @@ jobs:
           fi
 
       - name: OPA policy validation
+        env:
+          MANIFEST_PATH: ${{ inputs.manifest_path }}
         run: |
-          conftest test "${{ inputs.manifest_path }}" --policy policies/opa
+          if [ -f "$MANIFEST_PATH/kustomization.yaml" ]; then
+            kubectl kustomize "$MANIFEST_PATH" | conftest test - --policy platform-core/policies/opa
+          else
+            conftest test "$MANIFEST_PATH" --policy platform-core/policies/opa
+          fi
 
       - name: Required label validation
+        env:
+          MANIFEST_PATH: ${{ inputs.manifest_path }}
         run: |
-          conftest test "${{ inputs.manifest_path }}" --policy policies/opa --namespace labels
+          if [ -f "$MANIFEST_PATH/kustomization.yaml" ]; then
+            kubectl kustomize "$MANIFEST_PATH" | conftest test - --policy platform-core/policies/opa --namespace labels
+          else
+            conftest test "$MANIFEST_PATH" --policy platform-core/policies/opa --namespace labels
+          fi
 
       - name: Latest tag validation
+        env:
+          MANIFEST_PATH: ${{ inputs.manifest_path }}
         run: |
-          conftest test "${{ inputs.manifest_path }}" --policy policies/opa --namespace images
+          if [ -f "$MANIFEST_PATH/kustomization.yaml" ]; then
+            kubectl kustomize "$MANIFEST_PATH" | conftest test - --policy platform-core/policies/opa --namespace images
+          else
+            conftest test "$MANIFEST_PATH" --policy platform-core/policies/opa --namespace images
+          fi
 
       - name: Resource limits validation
         run: |
