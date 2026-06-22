@@ -30,8 +30,14 @@ jobs:
           sudo mv conftest /usr/local/bin/conftest
 
       - name: Kubeconform validation
+        env:
+          MANIFEST_PATH: ${{ inputs.manifest_path }}
         run: |
-          kubeconform -summary -strict -ignore-missing-schemas "${{ inputs.manifest_path }}"
+          if [ -f "$MANIFEST_PATH/kustomization.yaml" ]; then
+            kubectl kustomize "$MANIFEST_PATH" | kubeconform -summary -strict -ignore-missing-schemas
+          else
+            kubeconform -summary -strict -ignore-missing-schemas "$MANIFEST_PATH"
+          fi
 
       - name: OPA policy validation
         run: |
@@ -48,4 +54,3 @@ jobs:
       - name: Resource limits validation
         run: |
           echo "Resource request and limit checks are enforced by Kyverno in-cluster and by reusable policy bundles for service repos."
-
