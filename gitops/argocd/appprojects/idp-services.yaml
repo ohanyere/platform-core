@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: idp-services
+  namespace: argocd
+spec:
+  description: IDP-managed application repositories discovered by ApplicationSet.
+  sourceRepos:
+    - https://github.com/ohanyere/*.git
+  destinations:
+    - namespace: '*-dev'
+      server: https://kubernetes.default.svc
+    - namespace: '*-stage'
+      server: https://kubernetes.default.svc
+    - namespace: '*-prod'
+      server: https://kubernetes.default.svc
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  clusterResourceWhitelist: []

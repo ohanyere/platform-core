@@ -1,0 +1,119 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: idp-managed-services
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions:
+    - missingkey=error
+  generators:
+    - scmProvider:
+        cloneProtocol: https
+        github:
+          organization: ohanyere
+          tokenRef:
+            secretName: github-scm-provider
+            key: token
+        filters:
+          - labelMatch: idp-managed-service
+      template:
+        metadata:
+          name: '{{ .repository }}-dev'
+          labels:
+            app.kubernetes.io/part-of: idp-services
+            platform.idp/environment: dev
+            platform.idp/source-repo: '{{ .repository }}'
+        spec:
+          project: idp-services
+          source:
+            repoURL: '{{ .url }}'
+            targetRevision: '{{ .branch }}'
+            path: k8s/overlays/dev
+          destination:
+            server: https://kubernetes.default.svc
+            namespace: '{{ .repository }}-dev'
+          syncPolicy:
+            automated:
+              prune: true
+              selfHeal: true
+            syncOptions:
+              - CreateNamespace=true
+    - scmProvider:
+        cloneProtocol: https
+        github:
+          organization: ohanyere
+          tokenRef:
+            secretName: github-scm-provider
+            key: token
+        filters:
+          - labelMatch: idp-managed-service
+      template:
+        metadata:
+          name: '{{ .repository }}-stage'
+          labels:
+            app.kubernetes.io/part-of: idp-services
+            platform.idp/environment: stage
+            platform.idp/source-repo: '{{ .repository }}'
+        spec:
+          project: idp-services
+          source:
+            repoURL: '{{ .url }}'
+            targetRevision: '{{ .branch }}'
+            path: k8s/overlays/stage
+          destination:
+            server: https://kubernetes.default.svc
+            namespace: '{{ .repository }}-stage'
+          syncPolicy:
+            syncOptions:
+              - CreateNamespace=true
+    - scmProvider:
+        cloneProtocol: https
+        github:
+          organization: ohanyere
+          tokenRef:
+            secretName: github-scm-provider
+            key: token
+        filters:
+          - labelMatch: idp-managed-service
+      template:
+        metadata:
+          name: '{{ .repository }}-prod'
+          labels:
+            app.kubernetes.io/part-of: idp-services
+            platform.idp/environment: prod
+            platform.idp/source-repo: '{{ .repository }}'
+        spec:
+          project: idp-services
+          source:
+            repoURL: '{{ .url }}'
+            targetRevision: '{{ .branch }}'
+            path: k8s/overlays/prod
+          destination:
+            server: https://kubernetes.default.svc
+            namespace: '{{ .repository }}-prod'
+          syncPolicy:
+            syncOptions:
+              - CreateNamespace=true
+  template:
+    metadata:
+      name: '{{ .repository }}-dev'
+      labels:
+        app.kubernetes.io/part-of: idp-services
+        platform.idp/environment: dev
+        platform.idp/source-repo: '{{ .repository }}'
+    spec:
+      project: idp-services
+      source:
+        repoURL: '{{ .url }}'
+        targetRevision: '{{ .branch }}'
+        path: k8s/overlays/dev
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{ .repository }}-dev'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
