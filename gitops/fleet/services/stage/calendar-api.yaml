@@ -1,0 +1,5 @@
+service: calendar-api
+repoURL: https://github.com/ohanyere/calendar-api.git
+branch: main
+path: k8s/overlays/stage
+namespace: calendar-api-stage

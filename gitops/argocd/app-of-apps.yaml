@@ -11,7 +11,7 @@ spec:
     path: gitops
     directory:
       recurse: true
-      exclude: '{argocd/bootstrap/*}'
+      exclude: '{argocd/bootstrap/*,fleet/services/*/*.yaml}'
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

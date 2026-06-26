@@ -10,26 +10,26 @@ Team projects are intentionally namespace-scoped. Platform projects can manage c
 
 ## IDP-managed service fleet
 
-`gitops/argocd/applicationsets/idp-managed-services.yaml` defines the fleet pattern for services managed by the internal developer platform. The ApplicationSet uses the GitHub SCM provider to scan the `ohanyere` GitHub organization, selects repositories with the `idp-managed-service` topic, and generates environment-specific Argo CD Applications from each service repository.
+`gitops/argocd/applicationsets/idp-managed-services.yaml` defines the fleet pattern for services managed by the internal developer platform. The ApplicationSets use a Git file-based registry in this repository instead of the GitHub SCM provider. This keeps deployment discovery independent from GitHub organization APIs, which matters because `ohanyere` is a personal GitHub account and Argo CD would otherwise call organization endpoints such as `/orgs/ohanyere/repos`.
 
-Each tagged repository can publish any workload shape, including APIs, workers, and frontends. The only required GitOps contract is that the repository contains the overlay for the environment it wants Argo CD to manage:
+The fleet registry lives under `gitops/fleet/services/<environment>/`. Each file registers one service for one environment and supplies the values used by the generated Argo CD Application. `platform-core-apps` excludes these registry files from its recursive apply path so Argo CD consumes them through the ApplicationSet Git generator instead of applying them as Kubernetes resources.
 
-- `k8s/overlays/dev` creates `<repo>-dev` in namespace `<repo>-dev`
-- `k8s/overlays/stage` creates `<repo>-stage` in namespace `<repo>-stage`
-- `k8s/overlays/prod` creates `<repo>-prod` in namespace `<repo>-prod`
+```yaml
+service: calendar-api
+repoURL: https://github.com/ohanyere/calendar-api.git
+branch: main
+path: k8s/overlays/dev
+namespace: calendar-api-dev
+```
+
+IDP-created services are registered by adding or updating these files as part of the service provisioning workflow:
+
+- `gitops/fleet/services/dev/<service>.yaml` creates `<service>-dev`
+- `gitops/fleet/services/stage/<service>.yaml` creates `<service>-stage`
+- `gitops/fleet/services/prod/<service>.yaml` creates `<service>-prod`
+
+Each registered repository can publish any workload shape, including APIs, workers, and frontends. The only required GitOps contract is that the registry entry points at an overlay path that the service repository contains.
 
 Development sync is automated with prune and self-heal enabled so platform-managed changes land quickly. Stage and production are generated with namespace creation enabled, but sync remains manual to keep promotion explicit.
 
-The ApplicationSet controller needs a GitHub token in the `argocd` namespace:
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: github-scm-provider
-  namespace: argocd
-stringData:
-  token: <github-token>
-```
-
-The token only needs read access to repository metadata and contents for the managed organization. GitHub repository topics are used for `labelMatch`, so adding or removing the `idp-managed-service` topic controls fleet membership.
+GitHub topics remain useful service metadata. The IDP can still apply topics such as `idp-managed-service`, template identifiers, or team labels for search, ownership, and reporting, but topics are not deployment discovery. A service is deployed only when it has a fleet registry file in the appropriate environment directory.

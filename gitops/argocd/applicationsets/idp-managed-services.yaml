@@ -8,31 +8,28 @@ spec:
   goTemplateOptions:
     - missingkey=error
   generators:
-    - scmProvider:
-        cloneProtocol: https
-        github:
-          organization: ohanyere
-          tokenRef:
-            secretName: github-scm-provider
-            key: token
-        filters:
-          - labelMatch: idp-managed-service
+    - git:
+        repoURL: https://github.com/ohanyere/platform-core.git
+        revision: main
+        pathParamPrefix: fleet
+        files:
+          - path: gitops/fleet/services/dev/*.yaml
   template:
     metadata:
-      name: '{{ .repository }}-dev'
+      name: "{{ .service }}-dev"
       labels:
         app.kubernetes.io/part-of: idp-services
         platform.idp/environment: dev
-        platform.idp/source-repo: '{{ .repository }}'
+        platform.idp/service: "{{ .service }}"
     spec:
       project: idp-services
       source:
-        repoURL: '{{ .url }}'
-        targetRevision: '{{ .branch }}'
-        path: k8s/overlays/dev
+        repoURL: "{{ .repoURL }}"
+        targetRevision: "{{ .branch }}"
+        path: "{{ .path }}"
       destination:
         server: https://kubernetes.default.svc
-        namespace: '{{ .repository }}-dev'
+        namespace: "{{ .namespace }}"
       syncPolicy:
         automated:
           prune: true
@@ -50,31 +47,28 @@ spec:
   goTemplateOptions:
     - missingkey=error
   generators:
-    - scmProvider:
-        cloneProtocol: https
-        github:
-          organization: ohanyere
-          tokenRef:
-            secretName: github-scm-provider
-            key: token
-        filters:
-          - labelMatch: idp-managed-service
+    - git:
+        repoURL: https://github.com/ohanyere/platform-core.git
+        revision: main
+        pathParamPrefix: fleet
+        files:
+          - path: gitops/fleet/services/stage/*.yaml
   template:
     metadata:
-      name: '{{ .repository }}-stage'
+      name: "{{ .service }}-stage"
       labels:
         app.kubernetes.io/part-of: idp-services
         platform.idp/environment: stage
-        platform.idp/source-repo: '{{ .repository }}'
+        platform.idp/service: "{{ .service }}"
     spec:
       project: idp-services
       source:
-        repoURL: '{{ .url }}'
-        targetRevision: '{{ .branch }}'
-        path: k8s/overlays/stage
+        repoURL: "{{ .repoURL }}"
+        targetRevision: "{{ .branch }}"
+        path: "{{ .path }}"
       destination:
         server: https://kubernetes.default.svc
-        namespace: '{{ .repository }}-stage'
+        namespace: "{{ .namespace }}"
       syncPolicy:
         syncOptions:
           - CreateNamespace=true
@@ -89,31 +83,28 @@ spec:
   goTemplateOptions:
     - missingkey=error
   generators:
-    - scmProvider:
-        cloneProtocol: https
-        github:
-          organization: ohanyere
-          tokenRef:
-            secretName: github-scm-provider
-            key: token
-        filters:
-          - labelMatch: idp-managed-service
+    - git:
+        repoURL: https://github.com/ohanyere/platform-core.git
+        revision: main
+        pathParamPrefix: fleet
+        files:
+          - path: gitops/fleet/services/prod/*.yaml
   template:
     metadata:
-      name: '{{ .repository }}-prod'
+      name: "{{ .service }}-prod"
       labels:
         app.kubernetes.io/part-of: idp-services
         platform.idp/environment: prod
-        platform.idp/source-repo: '{{ .repository }}'
+        platform.idp/service: "{{ .service }}"
     spec:
       project: idp-services
       source:
-        repoURL: '{{ .url }}'
-        targetRevision: '{{ .branch }}'
-        path: k8s/overlays/prod
+        repoURL: "{{ .repoURL }}"
+        targetRevision: "{{ .branch }}"
+        path: "{{ .path }}"
       destination:
         server: https://kubernetes.default.svc
-        namespace: '{{ .repository }}-prod'
+        namespace: "{{ .namespace }}"
       syncPolicy:
         syncOptions:
           - CreateNamespace=true

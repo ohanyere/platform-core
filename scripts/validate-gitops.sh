@@ -4,7 +4,10 @@ set -euo pipefail
 echo "Validating GitOps manifests"
 
 if command -v kubeconform >/dev/null 2>&1; then
-  kubeconform -summary -ignore-missing-schemas gitops progressive-delivery observability security finops
+  find gitops progressive-delivery observability security finops \
+    -type f \( -name '*.yaml' -o -name '*.yml' \) \
+    ! -path 'gitops/fleet/services/*/*.yaml' \
+    -print0 | xargs -0 kubeconform -summary -ignore-missing-schemas
 else
   echo "kubeconform not found; skipping Kubernetes schema validation"
   echo "Install kubeconform for offline CRD-aware validation without a live cluster"
