@@ -3,8 +3,10 @@ kind: AppProject
 metadata:
   name: idp-services
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-20"
 spec:
-  description: IDP-managed application repositories discovered by ApplicationSet.
+  description: IDP-managed application repositories registered in the fleet registry.
   sourceRepos:
     - https://github.com/ohanyere/*.git
   destinations:
@@ -17,4 +19,6 @@ spec:
   namespaceResourceWhitelist:
     - group: '*'
       kind: '*'
-  clusterResourceWhitelist: []
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace

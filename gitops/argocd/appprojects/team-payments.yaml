@@ -3,6 +3,8 @@ kind: AppProject
 metadata:
   name: team-payments
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-20"
 spec:
   description: Payments team applications.
   sourceRepos:

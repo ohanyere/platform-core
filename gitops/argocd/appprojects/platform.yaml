@@ -3,10 +3,14 @@ kind: AppProject
 metadata:
   name: platform
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-20"
 spec:
   description: Platform-owned infrastructure and shared controls.
   sourceRepos:
     - https://github.com/ohanyere/platform-core.git
+    - https://argoproj.github.io/argo-helm
+    - https://istio-release.storage.googleapis.com/charts
   destinations:
     - namespace: argocd
       server: https://kubernetes.default.svc

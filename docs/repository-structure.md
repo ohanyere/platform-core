@@ -6,7 +6,7 @@
 
 `crossplane` contains XRDs, AWS compositions, provider configuration examples, and inactive claim examples.
 
-`gitops` contains Argo CD bootstrap manifests, AppProjects, ApplicationSets, the IDP service fleet registry, Istio defaults, and cert-manager defaults.
+`gitops` contains Argo CD bootstrap manifests, AppProjects, ApplicationSets, platform controller bootstrap Applications, the IDP service fleet registry, Istio defaults, and cert-manager defaults.
 
 `progressive-delivery` contains Argo Rollouts AnalysisTemplates backed by Prometheus queries.
 
