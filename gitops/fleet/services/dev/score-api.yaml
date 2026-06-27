@@ -1,0 +1,5 @@
+service: score-api
+repoURL: https://github.com/ohanyere/score-api.git
+branch: main
+path: k8s/overlays/dev
+namespace: score-api-dev
