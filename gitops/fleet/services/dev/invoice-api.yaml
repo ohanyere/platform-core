@@ -1,0 +1,5 @@
+service: invoice-api
+repoURL: https://github.com/ohanyere/invoice-api.git
+branch: main
+path: k8s/overlays/dev
+namespace: invoice-api-dev
