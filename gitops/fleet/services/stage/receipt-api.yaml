@@ -1,5 +1,0 @@
-service: receipt-api
-repoURL: https://github.com/ohanyere/receipt-api.git
-branch: main
-path: k8s/overlays/stage
-namespace: receipt-api-stage

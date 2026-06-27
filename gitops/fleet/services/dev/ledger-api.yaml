@@ -1,5 +1,0 @@
-service: ledger-api
-repoURL: https://github.com/ohanyere/ledger-api.git
-branch: main
-path: k8s/overlays/dev
-namespace: ledger-api-dev
