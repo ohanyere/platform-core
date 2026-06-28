@@ -47,7 +47,9 @@ IDP-created services are registered by adding or updating these files as part of
 
 Each registered repository can publish any workload shape, including APIs, workers, and frontends. The only required GitOps contract is that the registry entry points at an overlay path that the service repository contains.
 
-Development sync is automated with prune and self-heal enabled so platform-managed changes land quickly. Stage and production are generated with namespace creation enabled, but sync remains manual to keep promotion explicit.
+Development sync is automated with prune and self-heal enabled so platform-managed changes land quickly after CI updates the dev overlay. Stage sync is automated only after a promotion PR is merged. Production sync is automated only after a production promotion PR is merged.
+
+Developers do not run `kubectl` or manually sync Argo CD for normal service delivery. Argo CD is the reconciler for all environments; GitHub PR approval is the release gate for stage and production.
 
 The `idp-services` AppProject permits generated services to create their managed namespaces while keeping source repositories constrained to `https://github.com/ohanyere/*.git` and destinations constrained to `*-dev`, `*-stage`, and `*-prod`.
 
