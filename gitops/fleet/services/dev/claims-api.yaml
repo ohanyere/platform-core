@@ -1,0 +1,5 @@
+service: claims-api
+repoURL: https://github.com/ohanyere/claims-api.git
+branch: main
+path: k8s/overlays/dev
+namespace: claims-api-dev
