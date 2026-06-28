@@ -1,0 +1,5 @@
+service: audit-api
+repoURL: https://github.com/ohanyere/audit-api.git
+branch: main
+path: k8s/overlays/stage
+namespace: audit-api-stage
