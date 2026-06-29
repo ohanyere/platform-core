@@ -1,0 +1,5 @@
+service: system-api
+repoURL: https://github.com/ohanyere/system-api.git
+branch: main
+path: k8s/overlays/stage
+namespace: system-api-stage
