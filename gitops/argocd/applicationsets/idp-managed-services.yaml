@@ -36,6 +36,13 @@ spec:
         automated:
           prune: true
           selfHeal: true
+        managedNamespaceMetadata:
+          labels:
+            app.kubernetes.io/name: "{{ .service }}"
+            app.kubernetes.io/part-of: idp-services
+            platform.io/team: "{{ .service }}"
+            platform.io/cost-center: "cc-{{ .service }}"
+            platform.io/environment: dev
         syncOptions:
           - CreateNamespace=true
 ---
@@ -77,6 +84,13 @@ spec:
         automated:
           prune: true
           selfHeal: true
+        managedNamespaceMetadata:
+          labels:
+            app.kubernetes.io/name: "{{ .service }}"
+            app.kubernetes.io/part-of: idp-services
+            platform.io/team: "{{ .service }}"
+            platform.io/cost-center: "cc-{{ .service }}"
+            platform.io/environment: stage
         syncOptions:
           - CreateNamespace=true
 ---
@@ -118,5 +132,12 @@ spec:
         automated:
           prune: true
           selfHeal: true
+        managedNamespaceMetadata:
+          labels:
+            app.kubernetes.io/name: "{{ .service }}"
+            app.kubernetes.io/part-of: idp-services
+            platform.io/team: "{{ .service }}"
+            platform.io/cost-center: "cc-{{ .service }}"
+            platform.io/environment: prod
         syncOptions:
           - CreateNamespace=true

@@ -8,7 +8,7 @@ This audit records what exists in `platform-core` today and how far each capabil
 
 `platform-core` contains real platform building blocks for governance, scanning, signing, Crossplane abstractions, reusable CI, and Argo CD bootstrap. The strongest fully wired surfaces are the reusable GitHub Actions workflows and the Argo CD app-of-apps path under `gitops/`.
 
-Several cluster capabilities exist as manifests but are not currently installed by the GitOps bootstrap. Most notably, Crossplane XRDs, compositions, provider config, and Kyverno `ClusterPolicy` files live outside the `gitops/` tree that Argo CD syncs. Cosign signing is real in the build workflow, but there is no in-cluster signature verification policy in this repository.
+The GitOps bootstrap now wires the previously disconnected cluster capabilities. Crossplane, the required AWS provider packages, existing XRDs, existing compositions, existing provider configs, Kyverno, and existing Kyverno policies are installed through Argo CD Applications under `gitops/bootstrap/platform`. Cosign signing is real in CI, and Kyverno now enforces keyless signature verification for platform-owned images.
 
 ## Real And Working
 
@@ -43,7 +43,7 @@ Trivy scanning is real in `.github/workflows/reusable-scan.yaml`. It performs fi
 
 Cosign signing is real in `.github/workflows/reusable-build-sign.yaml`. The workflow installs Cosign and signs `docker.io/${dockerhub_namespace}/${service_name}:${image_tag}` after the image is pushed.
 
-This is CI signing only. See "Missing" for cluster verification.
+Cluster verification is enforced by `policies/kyverno/verify-signed-images.yaml` for platform-owned Docker Hub images signed by GitHub Actions keyless Cosign.
 
 ### Argo CD Bootstrap
 
@@ -55,9 +55,13 @@ This is CI signing only. See "Missing" for cluster verification.
 
 `gitops/bootstrap/platform/argo-rollouts.yaml` bootstraps Argo Rollouts and Istio base/control-plane Helm charts before fleet service ApplicationSets.
 
+`gitops/bootstrap/platform/crossplane.yaml` installs Crossplane, AWS provider packages, and the existing Crossplane definition directories.
+
+`gitops/bootstrap/platform/kyverno.yaml` installs Kyverno and applies the existing Kyverno policy directory.
+
 `gitops/argocd/applicationsets/idp-managed-services.yaml` defines Git-file based ApplicationSets for dev, stage, and prod generated services. The ApplicationSets are automated with prune, self-heal, and `CreateNamespace=true`.
 
-## Exists But Is Not Wired
+## Exists And Is Now Wired
 
 ### Crossplane
 
@@ -83,7 +87,9 @@ And one provider config:
 
 The `ProviderConfig` is real YAML and uses `credentials.source: IRSA`.
 
-These Crossplane resources are not currently wired into the Argo CD bootstrap because the app-of-apps syncs `path: gitops`, while the Crossplane resources live under `crossplane/`. This repository also does not contain a Crossplane controller install, an Upbound AWS provider install, or an Argo CD `Application` that installs the Crossplane resources.
+These Crossplane resources are wired by `gitops/bootstrap/platform/crossplane.yaml`. The bootstrap installs Crossplane, applies provider packages from `crossplane/providers`, applies XRDs from `crossplane/xrd`, applies compositions from `crossplane/compositions`, and applies provider configs from `crossplane/provider-configs`.
+
+The remaining environment prerequisite is AWS identity. The included `ProviderConfig` uses IRSA, so the target cluster must provide the matching AWS IAM role binding for provider pods.
 
 ### Kyverno Policies
 
@@ -98,10 +104,11 @@ These Crossplane resources are not currently wired into the Argo CD bootstrap be
 - `require-readonly-rootfs.yaml`
 - `require-resource-limits.yaml`
 - `validate-crossplane-claims.yaml`
+- `verify-signed-images.yaml`
 
 Most policies use `validationFailureAction: Enforce`; `require-network-policy.yaml` uses `Audit`.
 
-These policies are not currently installed by GitOps because they live under `policies/kyverno`, outside the app-of-apps `gitops` source path. This repository also does not contain a Kyverno controller installation manifest.
+These policies are installed by `gitops/bootstrap/platform/kyverno.yaml`. The bootstrap installs Kyverno once through the Helm chart and points `platform-kyverno-policies` at the existing `policies/kyverno` directory.
 
 ### Platform-Core PR Validation Depth
 
@@ -118,30 +125,25 @@ These policies are not currently installed by GitOps because they live under `po
 
 `crossplane/examples/*.example.yaml` are example claims only. They are not active by default and are not applied by the current GitOps bootstrap.
 
-The Crossplane documentation describes how service teams copy claims into service repositories, but this repository does not contain a Nexus Platform service-creation implementation that writes real claims.
+The Crossplane documentation describes how service teams copy claims into service repositories. This repository provides the GitOps and platform-control-plane side of that flow; the Nexus Platform service-creation implementation that writes claim YAML lives outside this repository.
 
 `scripts/bootstrap-cluster.sh` is a bootstrap helper that prints prerequisite checks and safe ordering. It does not install platform components itself.
 
-## Missing
+## Remaining External Prerequisites
 
-The following are not present in this repository today:
+The following are not solved by this repository alone:
 
-- GitOps installation of Kyverno policies.
-- GitOps installation of the Kyverno controller.
-- GitOps installation of Crossplane XRDs, compositions, or provider configs.
-- GitOps installation of the Crossplane controller.
-- GitOps installation of the Upbound AWS provider packages.
-- Cluster-side Cosign signature verification, such as a Kyverno `verifyImages` policy or Sigstore policy-controller policy.
 - A Nexus Platform implementation in this repository that creates Crossplane claim YAML.
-- Evidence that Crossplane AWS credentials or IRSA bindings are provisioned by this repository.
+- AWS IAM role and IRSA binding for the Upbound AWS provider pods.
+- Public-key verification for the optional Cosign private-key fallback. The enforced admission policy covers keyless GitHub Actions signatures.
 
 ## Direct Answers
 
 ### Can Nexus Platform Create Real Crossplane Claims Today?
 
-Not from `platform-core` alone.
+Partially.
 
-This repo defines the claim APIs, AWS compositions, a ProviderConfig, and example claim YAML. It does not contain the Nexus Platform automation that would create claim files, and its current Argo CD app-of-apps does not install the Crossplane definitions. Real claim creation would require a separate automation path to write claim YAML into a GitOps-synced service repository and a cluster that already has Crossplane, the AWS provider, XRDs, compositions, and provider config installed.
+This repo now installs the platform control-plane side: Crossplane, AWS providers, XRDs, compositions, and provider configs. A separate Nexus Platform automation path still needs to write claim YAML into a GitOps-synced service repository, and the live cluster still needs the AWS IRSA role binding for provider pods.
 
 ### Which Resource Types Are Already Supported?
 
@@ -159,11 +161,11 @@ Yes. `.github/workflows/reusable-build-sign.yaml` installs Cosign and signs the 
 
 ### Is Signature Verification Enforced In Cluster?
 
-No. The repository does not contain a Kyverno `verifyImages` policy, Sigstore policy-controller configuration, Cosign public key policy, or other in-cluster signature verification enforcement.
+Yes for platform-owned Docker Hub images signed by GitHub Actions keyless Cosign. `policies/kyverno/verify-signed-images.yaml` verifies those signatures through Kyverno admission.
 
 ### Are Kyverno Policies Installed By GitOps?
 
-No. Kyverno policies exist under `policies/kyverno`, but the Argo CD app-of-apps syncs `path: gitops`. There is no current GitOps `Application` or Kustomize path that installs those policy files.
+Yes. `gitops/bootstrap/platform/kyverno.yaml` installs Kyverno and applies the existing `policies/kyverno` directory.
 
 ### Are CI Policy Checks Real?
 

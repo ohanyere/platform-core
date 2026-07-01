@@ -11,10 +11,10 @@ Kyverno policies:
 - `require-network-policy.yaml` audits namespaces without NetworkPolicy.
 - `require-probes.yaml` requires readiness and liveness probes.
 - `validate-crossplane-claims.yaml` requires ownership labels on platform claims.
+- `verify-signed-images.yaml` requires Cosign keyless signatures for platform-owned images.
 
 OPA policies:
 
 - `no-latest-tag.rego` catches latest or missing tags in deployment images.
 - `require-labels.rego` checks required platform labels.
 - `disallow-privileged.rego` catches privileged deployment containers.
-

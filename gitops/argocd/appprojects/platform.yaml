@@ -11,6 +11,8 @@ spec:
     - https://github.com/ohanyere/platform-core.git
     - https://argoproj.github.io/argo-helm
     - https://istio-release.storage.googleapis.com/charts
+    - https://charts.crossplane.io/stable
+    - https://kyverno.github.io/kyverno
   destinations:
     - namespace: argocd
       server: https://kubernetes.default.svc
@@ -19,6 +21,10 @@ spec:
     - namespace: istio-system
       server: https://kubernetes.default.svc
     - namespace: cert-manager
+      server: https://kubernetes.default.svc
+    - namespace: crossplane-system
+      server: https://kubernetes.default.svc
+    - namespace: kyverno
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: '*'
