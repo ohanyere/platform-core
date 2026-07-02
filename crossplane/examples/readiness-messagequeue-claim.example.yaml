@@ -1,0 +1,16 @@
+apiVersion: platform.ohanyere.com/v1alpha1
+kind: MessageQueue
+metadata:
+  name: platform-aws-readiness
+  namespace: platform-smoke
+  labels:
+    platform.io/team: platform
+    platform.io/cost-center: cc-platform
+spec:
+  compositionRef:
+    name: messagequeue.aws.platform.ohanyere.com
+  parameters:
+    region: us-east-1
+    fifo: false
+    visibilityTimeoutSeconds: 30
+    deletionPolicy: Delete
