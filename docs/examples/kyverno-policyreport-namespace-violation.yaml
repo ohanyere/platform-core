@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: platform-policy-report-smoke
+  labels:
+    app.kubernetes.io/name: policy-report-smoke
+    app.kubernetes.io/part-of: platform-governance
+    platform.io/team: platform
+    platform.io/cost-center: cc-platform
+    platform.io/environment: dev
