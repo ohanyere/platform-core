@@ -1,0 +1,5 @@
+service: codex-provision-0707
+repoURL: https://github.com/ohanyere/codex-provision-0707.git
+branch: main
+path: k8s/overlays/stage
+namespace: codex-provision-0707-stage
