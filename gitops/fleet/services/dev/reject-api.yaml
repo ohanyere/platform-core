@@ -1,0 +1,5 @@
+service: reject-api
+repoURL: https://github.com/ohanyere/reject-api.git
+branch: main
+path: k8s/overlays/dev
+namespace: reject-api-dev
