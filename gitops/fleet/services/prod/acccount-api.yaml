@@ -1,0 +1,5 @@
+service: acccount-api
+repoURL: https://github.com/ohanyere/acccount-api.git
+branch: main
+path: k8s/overlays/prod
+namespace: acccount-api-prod
