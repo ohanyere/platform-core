@@ -1,0 +1,5 @@
+service: review-api
+repoURL: https://github.com/ohanyere/review-api.git
+branch: main
+path: k8s/overlays/dev
+namespace: review-api-dev
