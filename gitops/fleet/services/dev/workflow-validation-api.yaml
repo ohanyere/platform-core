@@ -1,0 +1,5 @@
+service: workflow-validation-api
+repoURL: https://github.com/ohanyere/workflow-validation-api.git
+branch: main
+path: k8s/overlays/dev
+namespace: workflow-validation-api-dev
