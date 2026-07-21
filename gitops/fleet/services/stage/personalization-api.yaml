@@ -1,0 +1,5 @@
+service: personalization-api
+repoURL: https://github.com/ohanyere/personalization-api.git
+branch: main
+path: k8s/overlays/stage
+namespace: personalization-api-stage
