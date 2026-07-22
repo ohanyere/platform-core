@@ -1,0 +1,5 @@
+service: workflow-docker-debug-api
+repoURL: https://github.com/ohanyere/workflow-docker-debug-api.git
+branch: main
+path: k8s/overlays/stage
+namespace: workflow-docker-debug-api-stage
