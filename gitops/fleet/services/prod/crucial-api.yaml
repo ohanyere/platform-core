@@ -1,0 +1,5 @@
+service: crucial-api
+repoURL: https://github.com/ohanyere/crucial-api.git
+branch: main
+path: k8s/overlays/prod
+namespace: crucial-api-prod
