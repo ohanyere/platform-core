@@ -1,0 +1,5 @@
+service: send-api
+repoURL: https://github.com/ohanyere/send-api.git
+branch: main
+path: k8s/overlays/stage
+namespace: send-api-stage
