@@ -1,0 +1,5 @@
+service: service-api
+repoURL: https://github.com/ohanyere/service-api.git
+branch: main
+path: k8s/overlays/stage
+namespace: service-api-stage
