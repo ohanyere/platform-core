@@ -1,0 +1,5 @@
+service: source-api
+repoURL: https://github.com/ohanyere/source-api.git
+branch: main
+path: k8s/overlays/dev
+namespace: source-api-dev
