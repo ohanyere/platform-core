@@ -1,0 +1,5 @@
+service: checkout-api
+repoURL: https://github.com/ohanyere/checkout-api.git
+branch: main
+path: k8s/overlays/stage
+namespace: checkout-api-stage
